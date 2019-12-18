@@ -55,7 +55,6 @@ export default class Home extends React.Component {
 		});
 	}
 	render() {
-        console.log('Home');
 		return (
 			<div className="home">
 				{/* 子路由 */}
