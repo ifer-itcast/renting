@@ -39,14 +39,15 @@ const navs = [
 export default class Index extends React.Component {
 	state = {
 		swipers: [],
-		data: ['1', '2', '3']
+		isSwiperLoaded: false
 	};
 	async getSwipers() {
 		// 请求数据
 		let { data: res } = await axios.get('http://localhost:8080/home/swiper');
 		// 把获取到的值设置给state
 		this.setState({
-			swipers: res.body
+			swipers: res.body,
+			isSwiperLoaded: true
 		});
 	}
 	componentDidMount() {
@@ -89,10 +90,15 @@ export default class Index extends React.Component {
 	render() {
 		return (
 			<div className="index">
-				<Carousel autoplay infinite autoplayInterval="2000">
-					{/* 调用渲染轮播图的方法 */}
-					{this.renderSwipers()}
-				</Carousel>
+				<div className="swiper">
+					{this.state.isSwiperLoaded
+						? <Carousel autoplay infinite autoplayInterval="2000">
+								{/* 调用渲染轮播图的方法 */}
+								{this.renderSwipers()}
+							</Carousel>
+						: null}
+				</div>
+
 				{/* 导航菜单 */}
 				<Flex className="nav">
 					{this.renderNavs()}
