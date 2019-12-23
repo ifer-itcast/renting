@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, Flex } from 'antd-mobile';
+import { Carousel, Flex, Grid } from 'antd-mobile';
 import axios from 'axios';
 import './index.scss';
 
@@ -36,6 +36,11 @@ const navs = [
 	}
 ];
 
+const data = Array.from(new Array(4)).map((_val, i) => ({
+	icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
+	text: `name${i}`
+}));
+
 export default class Index extends React.Component {
 	state = {
 		swipers: [],
@@ -52,7 +57,7 @@ export default class Index extends React.Component {
 		});
 	}
 	// 获取租房小组数据
-	async getGroups () {
+	async getGroups() {
 		const res = await axios.get('http://localhost:8080/home/groups', {
 			params: {
 				area: 'AREA%7C88cff55c-aaa4-e2e0'
@@ -117,6 +122,27 @@ export default class Index extends React.Component {
 				<Flex className="nav">
 					{this.renderNavs()}
 				</Flex>
+
+				{/* 租房小组 */}
+				<div className="group">
+					<h3 className="group-title">
+						租房小组<span className="more">更多</span>
+					</h3>
+					<Grid
+						data={data}
+						columnNum={2}
+						square={false}
+						hasLine={false}
+						renderItem={() =>
+							<Flex className="group-item" justify="around">
+								<div className="desc">
+									<p className="title">家住回龙观</p>
+									<span className="info">归属的感觉</span>
+								</div>
+								<img src="" alt="" />
+							</Flex>}
+					/>
+				</div>
 			</div>
 		);
 	}
