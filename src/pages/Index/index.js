@@ -1,7 +1,7 @@
 import React from 'react';
 import { Carousel, Flex } from 'antd-mobile';
 import axios from 'axios';
-import './index.css';
+import './index.scss';
 
 import nav1 from '../../assets/images/nav-1.png';
 import nav2 from '../../assets/images/nav-2.png';
