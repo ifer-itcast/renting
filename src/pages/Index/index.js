@@ -36,11 +36,6 @@ const navs = [
 	}
 ];
 
-const data = Array.from(new Array(4)).map((_val, i) => ({
-	icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
-	text: `name${i}`
-}));
-
 export default class Index extends React.Component {
 	state = {
 		swipers: [],
@@ -129,17 +124,17 @@ export default class Index extends React.Component {
 						租房小组<span className="more">更多</span>
 					</h3>
 					<Grid
-						data={data}
+						data={this.state.groups}
 						columnNum={2}
 						square={false}
 						hasLine={false}
-						renderItem={() =>
-							<Flex className="group-item" justify="around">
+						renderItem={(item) =>
+							<Flex className="group-item" justify="around" key={item.id}>
 								<div className="desc">
-									<p className="title">家住回龙观</p>
-									<span className="info">归属的感觉</span>
+									<p className="title">{item.title}</p>
+									<span className="info">{item.desc}</span>
 								</div>
-								<img src="" alt="" />
+								<img src={`http://localhost:8080${item.imgSrc}`} alt="" />
 							</Flex>}
 					/>
 				</div>
