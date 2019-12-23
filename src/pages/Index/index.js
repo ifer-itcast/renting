@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, Flex, Grid } from 'antd-mobile';
+import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
 import axios from 'axios';
 import './index.scss';
 
@@ -40,7 +40,8 @@ export default class Index extends React.Component {
 	state = {
 		swipers: [],
 		isSwiperLoaded: false,
-		groups: []
+		groups: [],
+		news: []
 	};
 	async getSwipers() {
 		// 请求数据
@@ -63,9 +64,17 @@ export default class Index extends React.Component {
 			groups: res.data.body
 		});
 	}
+	// 获取最新资讯数据
+	async getNews() {
+		const res = await axios.get('http://localhost:8080/home/news?area=AREA%7C88cff55c-aaa4-e2e0');
+		this.setState({
+			news: res.data.body
+		});
+	}
 	componentDidMount() {
 		this.getSwipers();
 		this.getGroups();
+		this.getNews();
 	}
 	// 渲染轮播图的逻辑代码
 	renderSwipers() {
@@ -101,6 +110,29 @@ export default class Index extends React.Component {
 			);
 		});
 	}
+	// 渲染最新资讯
+	renderNews() {
+		return this.state.news.map(item =>
+			<div className="news-item" key={item.id}>
+				<div className="imgwrap">
+					<img className="img" src={`http://localhost:8080${item.imgSrc}`} alt="" />
+				</div>
+				<Flex className="content" direction="column" justify="between">
+					<h3 className="title">
+						{item.title}
+					</h3>
+					<Flex className="info" justify="between">
+						<span>
+							{item.from}
+						</span>
+						<span>
+							{item.date}
+						</span>
+					</Flex>
+				</Flex>
+			</div>
+		);
+	}
 	render() {
 		return (
 			<div className="index">
@@ -128,15 +160,26 @@ export default class Index extends React.Component {
 						columnNum={2}
 						square={false}
 						hasLine={false}
-						renderItem={(item) =>
+						renderItem={item =>
 							<Flex className="group-item" justify="around" key={item.id}>
 								<div className="desc">
-									<p className="title">{item.title}</p>
-									<span className="info">{item.desc}</span>
+									<p className="title">
+										{item.title}
+									</p>
+									<span className="info">
+										{item.desc}
+									</span>
 								</div>
 								<img src={`http://localhost:8080${item.imgSrc}`} alt="" />
 							</Flex>}
 					/>
+				</div>
+				{/* 最新资讯 */}
+				<div className="news">
+					<h3 className="group-title">最新资讯</h3>
+					<WingBlank size="md">
+						{this.renderNews()}
+					</WingBlank>
 				</div>
 			</div>
 		);
