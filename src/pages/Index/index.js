@@ -39,7 +39,8 @@ const navs = [
 export default class Index extends React.Component {
 	state = {
 		swipers: [],
-		isSwiperLoaded: false
+		isSwiperLoaded: false,
+		groups: []
 	};
 	async getSwipers() {
 		// 请求数据
@@ -50,8 +51,21 @@ export default class Index extends React.Component {
 			isSwiperLoaded: true
 		});
 	}
+	// 获取租房小组数据
+	async getGroups () {
+		const res = await axios.get('http://localhost:8080/home/groups', {
+			params: {
+				area: 'AREA%7C88cff55c-aaa4-e2e0'
+			}
+		});
+
+		this.setState({
+			groups: res.data.body
+		});
+	}
 	componentDidMount() {
 		this.getSwipers();
+		this.getGroups();
 	}
 	// 渲染轮播图的逻辑代码
 	renderSwipers() {
