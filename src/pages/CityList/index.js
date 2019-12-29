@@ -7,22 +7,7 @@ import './index.scss';
 import { getCurrentCity } from '../../utils';
 
 // 列表数据源
-const list = Array(100).fill('react-virtualized');
-
-// 渲染每一行数据的函数
-function rowRenderer({
-	key, // Unique key within array of rows
-	index, // 索引号
-	isScrolling, // 当前项是否滚动中，滚动中为 true
-	isVisible, // 当前项在 List 中可见
-	style // 指定了每一样的样式
-}) {
-	return (
-		<div key={key} style={style}>
-			{list[index]}
-		</div>
-	);
-}
+// const list = Array(100).fill('react-virtualized');
 
 const formatCityData = list => {
 	const cityList = {};
@@ -46,6 +31,10 @@ const formatCityData = list => {
 };
 
 export default class CityList extends React.Component {
+	state = {
+		cityList: {},
+		cityIndex: []
+	};
 	componentDidMount() {
 		this.getCityList();
 	}
@@ -62,7 +51,26 @@ export default class CityList extends React.Component {
 		const curCity = await getCurrentCity();
 		cityList['#'] = [curCity];
 		cityIndex.unshift('#');
-		console.log(cityList, cityIndex);
+
+		this.setState({
+			cityList,
+			cityIndex
+		});
+	}
+	// 渲染每一行数据的函数
+	rowRenderer({
+		key, // Unique key within array of rows
+		index, // 索引号
+		isScrolling, // 当前项是否滚动中，滚动中为 true
+		isVisible, // 当前项在 List 中可见
+		style // 指定了每一样的样式
+	}) {
+		return (
+			<div key={key} style={style} className="city">
+				<div className="title">S</div>
+				<div className="name">上海</div>
+			</div>
+		);
 	}
 	render() {
 		return (
@@ -77,11 +85,15 @@ export default class CityList extends React.Component {
 				</NavBar>
 				{/* 城市列表 */}
 				<AutoSizer>
-					{
-						({width, height}) => <List width={width} height={height} rowCount={list.length} rowHeight={20} rowRenderer={rowRenderer} />
-					}
+					{({ width, height }) =>
+						<List
+							width={width}
+							height={height}
+							rowCount={this.state.cityIndex.length}
+							rowHeight={100}
+							rowRenderer={this.rowRenderer}
+						/>}
 				</AutoSizer>
-				
 			</div>
 		);
 	}
