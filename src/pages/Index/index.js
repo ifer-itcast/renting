@@ -53,7 +53,8 @@ export default class Index extends React.Component {
 		swipers: [],
 		isSwiperLoaded: false,
 		groups: [],
-		news: []
+		news: [],
+		curCityName: '上海'
 	};
 	async getSwipers() {
 		// 请求数据
@@ -87,6 +88,14 @@ export default class Index extends React.Component {
 		this.getSwipers();
 		this.getGroups();
 		this.getNews();
+
+		const curCity = new window.BMap.LocalCity();
+		curCity.get(async res => {
+			const result = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
+			this.setState({
+				curCityName: result.data.body.label
+			});
+		});
 	}
 	// 渲染轮播图的逻辑代码
 	renderSwipers() {
@@ -161,7 +170,7 @@ export default class Index extends React.Component {
 						<Flex className="search">
 							{/* 位置 */}
 							<div className="location" onClick={() => this.props.history.push('/citylist')}>
-								<span className="name">上海</span>
+								<span className="name">{this.state.curCityName}</span>
 								<i className="iconfont icon-arrow" />
 							</div>
 							{/* 搜索表单 */}
