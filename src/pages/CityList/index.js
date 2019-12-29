@@ -48,7 +48,8 @@ const NAME_HEIGHT = 50; // 每个城市名称高度
 export default class CityList extends React.Component {
 	state = {
 		cityList: {},
-		cityIndex: []
+		cityIndex: [],
+		activeIndex: 0
 	};
 	componentDidMount() {
 		this.getCityList();
@@ -103,6 +104,17 @@ export default class CityList extends React.Component {
 		const { cityList, cityIndex } = this.state;
 		return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT;
 	};
+
+	renderCityIndex() {
+		const { cityIndex, activeIndex } = this.state;
+		return cityIndex.map((item, index) =>
+			<li className="city-index-item" key={item}>
+				<span className={activeIndex === index ? 'index-active' : ''}>
+					{item === 'hot' ? '热' : item.toUpperCase()}
+				</span>
+			</li>
+		);
+	}
 	render() {
 		return (
 			<div className="citylist">
@@ -125,6 +137,10 @@ export default class CityList extends React.Component {
 							rowRenderer={this.rowRenderer}
 						/>}
 				</AutoSizer>
+				{/* 右侧索引列表 */}
+				<ul className="city-index">
+					{this.renderCityIndex()}
+				</ul>
 			</div>
 		);
 	}
