@@ -36,6 +36,18 @@ const navs = [
 	}
 ];
 
+navigator.geolocation.getCurrentPosition(position => {
+	console.log(position);
+    // position 对象表示当前位置信息
+    // 纬度 => latitude
+    // 经度 => longitude
+    // 经纬度精度 => accuracy
+    // 海拔高度 => altitude
+    // 海拔高度精度 => altitudeAccuracy
+    // 设备行进方向 => heading
+    // 速度 => speed
+});
+
 export default class Index extends React.Component {
 	state = {
 		swipers: [],
