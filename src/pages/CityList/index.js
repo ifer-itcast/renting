@@ -1,9 +1,28 @@
 import React from 'react';
 import { NavBar } from 'antd-mobile';
 import axios from 'axios';
+import { List } from 'react-virtualized';
 import './index.scss';
 
 import { getCurrentCity } from '../../utils';
+
+// 列表数据源
+const list = Array(100).fill('react-virtualized');
+
+// 渲染每一行数据的函数
+function rowRenderer({
+	key, // Unique key within array of rows
+	index, // 索引号
+	isScrolling, // 当前项是否滚动中，滚动中为 true
+	isVisible, // 当前项在 List 中可见
+	style // 指定了每一样的样式
+}) {
+	return (
+		<div key={key} style={style}>
+			{list[index]}
+		</div>
+	);
+}
 
 const formatCityData = list => {
 	const cityList = {};
@@ -29,17 +48,17 @@ const formatCityData = list => {
 export default class CityList extends React.Component {
 	componentDidMount() {
 		this.getCityList();
-    }
-    // 获取城市数据并格式化
+	}
+	// 获取城市数据并格式化
 	async getCityList() {
-        // 城市列表
+		// 城市列表
 		const res = await axios.get('http://localhost:8080/area/city?level=1');
 		const { cityList, cityIndex } = formatCityData(res.data.body);
-        // 热门城市
-        const hotRes = await axios.get('http://localhost:8080/area/hot');
-        cityList['hot'] = hotRes.data.body;
-        cityIndex.unshift('hot');
-        // 当前城市
+		// 热门城市
+		const hotRes = await axios.get('http://localhost:8080/area/hot');
+		cityList['hot'] = hotRes.data.body;
+		cityIndex.unshift('hot');
+		// 当前城市
 		const curCity = await getCurrentCity();
 		cityList['#'] = [curCity];
 		cityIndex.unshift('#');
@@ -56,6 +75,8 @@ export default class CityList extends React.Component {
 				>
 					城市选择
 				</NavBar>
+				{/* 城市列表 */}
+				<List width={300} height={300} rowCount={list.length} rowHeight={20} rowRenderer={rowRenderer} />
 			</div>
 		);
 	}
