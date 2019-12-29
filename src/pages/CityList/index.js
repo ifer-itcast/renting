@@ -3,6 +3,8 @@ import { NavBar } from 'antd-mobile';
 import axios from 'axios';
 import './index.scss';
 
+import { getCurrentCity } from '../../utils';
+
 const formatCityData = list => {
 	const cityList = {};
 	list.forEach(item => {
@@ -30,13 +32,15 @@ export default class CityList extends React.Component {
     }
     // 获取城市数据并格式化
 	async getCityList() {
+        // 城市列表
 		const res = await axios.get('http://localhost:8080/area/city?level=1');
 		const { cityList, cityIndex } = formatCityData(res.data.body);
-        console.log(cityList, cityIndex);
-        
+        // 热门城市
         const hotRes = await axios.get('http://localhost:8080/area/hot');
         cityList['hot'] = hotRes.data.body;
         cityIndex.unshift('hot');
+        // 当前城市
+        const curCity = await getCurrentCity();
 	}
 	render() {
 		return (

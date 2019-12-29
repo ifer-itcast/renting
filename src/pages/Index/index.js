@@ -3,6 +3,8 @@ import { Carousel, Flex, Grid, WingBlank } from 'antd-mobile';
 import axios from 'axios';
 import './index.scss';
 
+import { getCurrentCity } from '../../utils';
+
 import nav1 from '../../assets/images/nav-1.png';
 import nav2 from '../../assets/images/nav-2.png';
 import nav3 from '../../assets/images/nav-3.png';
@@ -84,17 +86,23 @@ export default class Index extends React.Component {
 			news: res.data.body
 		});
 	}
-	componentDidMount() {
+	async componentDidMount () {
 		this.getSwipers();
 		this.getGroups();
 		this.getNews();
 
-		const curCity = new window.BMap.LocalCity();
+		// 根据 IP 定位获取当前城市名称/信息
+		/* const curCity = new window.BMap.LocalCity();
 		curCity.get(async res => {
 			const result = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
 			this.setState({
 				curCityName: result.data.body.label
 			});
+		}); */
+
+		const curCity = await getCurrentCity();
+		this.setState({
+			curCityName: curCity.label
 		});
 	}
 	// 渲染轮播图的逻辑代码
