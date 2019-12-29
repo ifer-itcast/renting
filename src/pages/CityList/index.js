@@ -40,7 +40,10 @@ export default class CityList extends React.Component {
         cityList['hot'] = hotRes.data.body;
         cityIndex.unshift('hot');
         // 当前城市
-        const curCity = await getCurrentCity();
+		const curCity = await getCurrentCity();
+		cityList['#'] = [curCity];
+		cityIndex.unshift('#');
+		console.log(cityList, cityIndex);
 	}
 	render() {
 		return (
