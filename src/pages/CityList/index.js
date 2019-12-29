@@ -32,7 +32,11 @@ export default class CityList extends React.Component {
 	async getCityList() {
 		const res = await axios.get('http://localhost:8080/area/city?level=1');
 		const { cityList, cityIndex } = formatCityData(res.data.body);
-		console.log(cityList, cityIndex);
+        console.log(cityList, cityIndex);
+        
+        const hotRes = await axios.get('http://localhost:8080/area/hot');
+        cityList['hot'] = hotRes.data.body;
+        cityIndex.unshift('hot');
 	}
 	render() {
 		return (
