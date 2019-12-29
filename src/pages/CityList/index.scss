@@ -1,5 +1,14 @@
 .citylist{
+    height: 100%;
+    // 下面元素百分百的时候并不包括这个45
+    padding-top: 45px;
+    // // 不一定要给顶部条加定位实现
+    // margin-top: -45px;
+    // // 此时拖动/滚动顶部条并不会滚动了
     .navbar{
+        // 不一定要给顶部条加定位实现
+        margin-top: -45px;
+        // 此时拖动/滚动顶部条并不会滚动了
         color: #333;
         background-color: #f6f5f6;
         .am-navbar-title{

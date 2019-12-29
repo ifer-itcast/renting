@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavBar } from 'antd-mobile';
 import axios from 'axios';
-import { List } from 'react-virtualized';
+import { List, AutoSizer } from 'react-virtualized';
 import './index.scss';
 
 import { getCurrentCity } from '../../utils';
@@ -76,7 +76,12 @@ export default class CityList extends React.Component {
 					城市选择
 				</NavBar>
 				{/* 城市列表 */}
-				<List width={300} height={300} rowCount={list.length} rowHeight={20} rowRenderer={rowRenderer} />
+				<AutoSizer>
+					{
+						({width, height}) => <List width={width} height={height} rowCount={list.length} rowHeight={20} rowRenderer={rowRenderer} />
+					}
+				</AutoSizer>
+				
 			</div>
 		);
 	}
