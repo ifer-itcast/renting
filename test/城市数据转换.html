@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let origin = [{
+            label: "北京",
+            value: "AREA|88cff55c-aaa4-e2e0",
+            pinyin: "beijing",
+            short: "bj"
+        }, {
+            label: "安庆",
+            value: "AREA|b4e8be1a-2de2-e039",
+            pinyin: "anqing",
+            short: "aq"
+        }];
+
+        /* let target = {
+            a: [{
+                label: "安庆",
+                value: "AREA|b4e8be1a-2de2-e039",
+                pinyin: "anqing",
+                short: "aq"
+            }],
+            b: [{
+                label: "北京",
+                value: "AREA|88cff55c-aaa4-e2e0",
+                pinyin: "beijing",
+                short: "bj"
+            }]
+        }; */
+        
+        // let arr = ['a', 'b']; // 根据有序的数组中的值去转换之后的对象当中去查找数据
+
+        const formatCityData = list => {
+            const cityList = {};
+            list.forEach(item => {
+                // 通过简写获取首字母
+                let first = item.short.substr(0, 1);
+                // 如果对象中有就 push
+                if (cityList[first]) {
+                    cityList[first].push(item);
+                } else {
+                    // 没有就新建一个数组，数组里面装这个数据
+                    cityList[first] = [item];
+                }
+            });
+            const cityIndex = Object.keys(cityList).sort();
+
+            return {
+                cityList,
+                cityIndex
+            };
+        };
+
+
+
+
+
+    </script>
+</body>
+
+</html>
