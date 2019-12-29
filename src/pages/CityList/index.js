@@ -30,6 +30,21 @@ const formatCityData = list => {
 	};
 };
 
+// 处理字符的索引
+const formatCityIndex = letter => {
+	switch (letter) {
+		case '#':
+			return '当前定位';
+		case 'hot':
+			return '热门城市';
+		default:
+			return letter.toUpperCase();
+	}
+};
+
+const TITLE_HEIGHT = 36; // 索引高度
+const NAME_HEIGHT = 50; // 每个城市名称高度
+
 export default class CityList extends React.Component {
 	state = {
 		cityList: {},
@@ -58,20 +73,36 @@ export default class CityList extends React.Component {
 		});
 	}
 	// 渲染每一行数据的函数
-	rowRenderer({
+	rowRenderer = ({
 		key, // Unique key within array of rows
 		index, // 索引号
 		isScrolling, // 当前项是否滚动中，滚动中为 true
 		isVisible, // 当前项在 List 中可见
 		style // 指定了每一样的样式
-	}) {
+	}) => {
+		const { cityIndex, cityList } = this.state;
+		const letter = cityIndex[index];
+		// cityList[letter]
 		return (
 			<div key={key} style={style} className="city">
-				<div className="title">S</div>
-				<div className="name">上海</div>
+				<div className="title">
+					{formatCityIndex(letter)}
+				</div>
+				{cityList[letter].map(item =>
+					<div className="name" key={item.value}>
+						{item.label}
+					</div>
+				)}
 			</div>
 		);
-	}
+	};
+	// 动态获取高度
+	getRowHeight = ({ index }) => {
+		// 索引标题高度 + 城市数量 * 城市名称的高度
+		// TITLE_HEIGHT + cityList[cityIndex[index]] * NAME_HEIGHT
+		const { cityList, cityIndex } = this.state;
+		return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT;
+	};
 	render() {
 		return (
 			<div className="citylist">
@@ -90,7 +121,7 @@ export default class CityList extends React.Component {
 							width={width}
 							height={height}
 							rowCount={this.state.cityIndex.length}
-							rowHeight={100}
+							rowHeight={this.getRowHeight}
 							rowRenderer={this.rowRenderer}
 						/>}
 				</AutoSizer>
