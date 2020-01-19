@@ -46,13 +46,20 @@ const TITLE_HEIGHT = 36; // 索引高度
 const NAME_HEIGHT = 50; // 每个城市名称高度
 
 export default class CityList extends React.Component {
-	state = {
-		cityList: {},
-		cityIndex: [],
-		activeIndex: 0
-	};
-	componentDidMount() {
-		this.getCityList();
+	constructor(props) {
+		super(props);
+		this.state = {
+			cityList: {},
+			cityIndex: [],
+			activeIndex: 0
+		};
+		// 创建 ref 对象
+		this.cityListComponent = React.createRef();
+	}
+	async componentDidMount() {
+		await this.getCityList();
+		// 调用 measureAllRows，提前计算 List 中每一行的高度，实现 scrollToRow 的精确跳转
+		this.cityListComponent.current.measureAllRows();
 	}
 	// 获取城市数据并格式化
 	async getCityList() {
@@ -108,7 +115,9 @@ export default class CityList extends React.Component {
 	renderCityIndex() {
 		const { cityIndex, activeIndex } = this.state;
 		return cityIndex.map((item, index) =>
-			<li className="city-index-item" key={item}>
+			<li className="city-index-item" key={item} onClick={() => {
+				this.cityListComponent.current.scrollToRow(index);
+			}}>
 				<span className={activeIndex === index ? 'index-active' : ''}>
 					{item === 'hot' ? '热' : item.toUpperCase()}
 				</span>
@@ -138,12 +147,14 @@ export default class CityList extends React.Component {
 				<AutoSizer>
 					{({ width, height }) =>
 						<List
+							ref={this.cityListComponent}
 							width={width}
 							height={height}
 							rowCount={this.state.cityIndex.length}
 							rowHeight={this.getRowHeight}
 							rowRenderer={this.rowRenderer}
 							onRowsRendered={this.onRowsRendered}
+							scrollToAlignment="start"
 						/>}
 				</AutoSizer>
 				{/* 右侧索引列表 */}
