@@ -5,14 +5,15 @@ import { NavBar } from 'antd-mobile';
 import { withRouter } from 'react-router-dom';
 
 // 导入样式
-import './index.scss';
+// import './index.scss';
+import styles from './index.module.css';
 
 function NavHeader({ children, history, onLeftClick }) {
     const defaultHandler = () => history.go(-1);
 
 	return (
 		<NavBar
-			className="navbar"
+			className={styles.navbar}
 			mode="light"
 			icon={<i className="iconfont icon-back" />}
 			onLeftClick={onLeftClick || defaultHandler}

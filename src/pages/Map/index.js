@@ -1,6 +1,6 @@
 import React from 'react';
 import NavHeader from '../../components/NavHeader';
-import './index.scss';
+import styles from './index.module.css';
 
 export default class Map extends React.Component {
     componentDidMount () {
@@ -13,9 +13,9 @@ export default class Map extends React.Component {
         map.centerAndZoom(point, 15);
     }
     render () {
-        return <div className="map">
+        return <div className={styles.map}>
             <NavHeader>地图找房</NavHeader>
-            <div id="container">
+            <div id="container" className={styles.container}>
                 地图
             </div>
         </div>

@@ -2,11 +2,11 @@ import React from 'react';
 import { Toast } from 'antd-mobile';
 import axios from 'axios';
 import { List, AutoSizer } from 'react-virtualized';
-import './index.scss';
 
 import { getCurrentCity } from '../../utils';
 
 import NavHeader from '../../components/NavHeader';
+import './index.scss';
 
 // 列表数据源
 // const list = Array(100).fill('react-virtualized');
