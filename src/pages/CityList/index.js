@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavBar } from 'antd-mobile';
+import { NavBar, Toast } from 'antd-mobile';
 import axios from 'axios';
 import { List, AutoSizer } from 'react-virtualized';
 import './index.scss';
@@ -42,6 +42,9 @@ const formatCityIndex = letter => {
 	}
 };
 
+// 有房源的城市
+const HOUSE_CITY = ['北京', '上海', '广州', '深圳'];
+
 const TITLE_HEIGHT = 36; // 索引高度
 const NAME_HEIGHT = 50; // 每个城市名称高度
 
@@ -80,6 +83,17 @@ export default class CityList extends React.Component {
 			cityIndex
 		});
 	}
+	// 切换城市
+	changeCity = ({label, value}) => {
+		if (HOUSE_CITY.indexOf(label) > -1) {
+			// 存储到本地
+			localStorage.setItem('hkzf_city', JSON.stringify({label, value}));
+			// 返回上一页
+			this.props.history.go(-1);
+		} else {
+			Toast.info('该城市暂无房源数据', 1, null, false);
+		}
+	}
 	// 渲染每一行数据的函数
 	rowRenderer = ({
 		key, // Unique key within array of rows
@@ -97,7 +111,7 @@ export default class CityList extends React.Component {
 					{formatCityIndex(letter)}
 				</div>
 				{cityList[letter].map(item =>
-					<div className="name" key={item.value}>
+					<div className="name" key={item.value} onClick={() => this.changeCity(item)}>
 						{item.label}
 					</div>
 				)}
