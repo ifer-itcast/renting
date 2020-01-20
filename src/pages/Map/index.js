@@ -97,6 +97,13 @@ export default class Map extends React.Component {
 			},
 			label
 		);
+		map.addEventListener('movestart', () => {
+			if (this.state.isShowList) {
+				this.setState({
+					isShowList: false
+				});
+			}
+		});
 	}
 	// 渲染覆盖物入口
 	async renderOverlays(id) {
@@ -173,8 +180,11 @@ export default class Map extends React.Component {
 		`);
 		// 设置样式
 		label.setStyle(labelStyle);
-		label.addEventListener('click', () => {
+		label.addEventListener('click', e => {
 			this.getHouseList(id);
+
+			const target = e.changedTouches[0];
+			this.map.panBy(window.innerWidth / 2 - target.clientX, (window.innerHeight - 330) / 2 - target.clientY);
 		});
 		// 添加覆盖物到地图中
 		this.map.addOverlay(label);
