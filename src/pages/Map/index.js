@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import NavHeader from '../../components/NavHeader';
 import styles from './index.module.css';
 
+import { Toast } from 'antd-mobile';
+
 const BMap = window.BMap;
 
 // 覆盖物样式
@@ -107,14 +109,23 @@ export default class Map extends React.Component {
 	}
 	// 渲染覆盖物入口
 	async renderOverlays(id) {
-		const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
-		const data = res.data.body;
-		// 调用 getTypeAndZoom 方法获取级别和类型
-		const { nextZoom, type } = this.getTypeAndZoom();
-		data.forEach(item => {
-			// 创建覆盖物
-			this.createOverlays(item, nextZoom, type);
-		});
+		try {
+			// 开启 loading
+			Toast.loading('加载中...', 0, null, false);
+			const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
+			// 关闭 loading
+			Toast.hide();
+			const data = res.data.body;
+			// 调用 getTypeAndZoom 方法获取级别和类型
+			const { nextZoom, type } = this.getTypeAndZoom();
+			data.forEach(item => {
+				// 创建覆盖物
+				this.createOverlays(item, nextZoom, type);
+			});
+		} catch(e) {
+			// 关闭 loading
+			Toast.hide();
+		}
 	}
 	createOverlays(data, zoom, type) {
 		const { coord: { longitude, latitude }, label: areaName, count, value } = data;
@@ -191,12 +202,21 @@ export default class Map extends React.Component {
 	}
 	// 获取小区房源数据
 	async getHouseList(id) {
-		const res = await axios.get(`http://localhost:8080/houses?cityId=${id}`);
-		this.setState({
-			housesList: res.data.body.list,
-			// 展示房源列表
-			isShowList: true
-		});
+		try {
+			// 开启 loading
+			Toast.loading('加载中...', 0, null, false);
+			const res = await axios.get(`http://localhost:8080/houses?cityId=${id}`);
+			// 关闭 loading
+			Toast.hide();
+			this.setState({
+				housesList: res.data.body.list,
+				// 展示房源列表
+				isShowList: true
+			});
+		} catch(e) {
+			// 关闭 loading
+			Toast.hide();
+		}
 	}
 	// 计算要绘制的覆盖物类型和下一个缩放级别
 	// 区 => 11，范围：>= 10 < 12
