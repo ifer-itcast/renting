@@ -102,8 +102,84 @@ export default class Map extends React.Component {
             this.createOverlays(item, nextZoom, type);
         });
 	}
-	createOverlays () {
-		
+	createOverlays (data, zoom, type) {
+		const { coord: {longitude, latitude}, label: areaName, count, value } = data;
+		// 创建坐标对象
+		const areaPoint = new BMap.Point(longitude, latitude);
+
+		if (type === 'circle') {
+			// 区或镇
+			this.createCircle(areaPoint, areaName, count, value, zoom);
+		} else {
+			// 小区，小区就不需要再放大了
+			this.createRect(areaPoint, areaName, count, value);
+		}
+	}
+	// 创建区、镇覆盖物
+	createCircle (point, name, count, id, zoom) {
+		// 创建覆盖物
+		const label = new BMap.Label('', {
+			position: point,
+			offset: new BMap.Size(-35, -35)
+		});
+		// 给 label 对象添加一个唯一标识
+		label.id = id;
+		// 设置房源覆盖物内容
+		label.setContent(`
+			<div class="${styles.bubble}">
+				<p class="${styles.name}">${name}</p>
+				<p>${count}套</p>
+			</div>
+		`);
+		// 设置样式
+		label.setStyle(labelStyle);
+		label.addEventListener('click', () => {
+			// 获取该区域下的房源数据
+			this.renderOverlays(id);
+
+			// 以当前点击的覆盖物为中心放大地图
+			this.map.centerAndZoom(point, zoom);
+
+			// 解决清除覆盖物时，百度地图API的JS文件自身报错的问题
+			setTimeout(() => {
+				this.map.clearOverlays();
+			});
+		});
+		// 添加覆盖物到地图中
+		this.map.addOverlay(label);
+	}
+	createRect (point, name, count, id) {
+		// 创建覆盖物
+		const label = new BMap.Label('', {
+			position: point,
+			offset: new BMap.Size(-50, -28)
+		});
+		// 给 label 对象添加一个唯一标识
+		label.id = id;
+		// 设置房源覆盖物内容
+		label.setContent(`
+			<div class="${styles.rect}">
+				<p class="${styles.housename}">${name}</p>
+				<p class="${styles.housenum}">${count}套</p>
+				<i class="${styles.arrow}"></i>
+			</div>
+		`);
+		// 设置样式
+		label.setStyle(labelStyle);
+		label.addEventListener('click', () => {
+			// // 获取该区域下的房源数据
+			// this.renderOverlays(id);
+
+			// // 以当前点击的覆盖物为中心放大地图
+			// this.map.centerAndZoom(point);
+
+			// // 解决清除覆盖物时，百度地图API的JS文件自身报错的问题
+			// setTimeout(() => {
+			// 	this.map.clearOverlays();
+			// });
+		});
+		// 添加覆盖物到地图中
+		this.map.addOverlay(label);
 	}
     // 计算要绘制的覆盖物类型和下一个缩放级别
     // 区 => 11，范围：>= 10 < 12
