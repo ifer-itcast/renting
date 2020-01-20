@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import NavHeader from '../../components/NavHeader';
 import styles from './index.module.css';
 
@@ -17,6 +18,12 @@ const labelStyle = {
 };
 
 export default class Map extends React.Component {
+	state = {
+		// 小区下的房源列表
+		housesList: [],
+		// 表示是否展示房源列表
+		isShowList: false
+	};
 	initMap() {
 		// // 全局对象需要作为 window 的属性访问
 		// // 否则通不过 ESLint
@@ -28,8 +35,8 @@ export default class Map extends React.Component {
 
 		// 获取当前定位城市
 		const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
-        const map = new BMap.Map('container');
-        this.map = map; // 在其他方法中通过 this 能获取到地图对象
+		const map = new BMap.Map('container');
+		this.map = map; // 在其他方法中通过 this 能获取到地图对象
 		const myGeo = new BMap.Geocoder();
 		myGeo.getPoint(
 			label,
@@ -84,26 +91,26 @@ export default class Map extends React.Component {
 						// 3. 在 map 对象上调用 addOverlay() 方法，将文本覆盖物添加到地图中
 						map.addOverlay(label);
                     }); */
-                    
-                    this.renderOverlays(value);
+
+					this.renderOverlays(value);
 				}
 			},
 			label
 		);
-    }
-    // 渲染覆盖物入口
-    async renderOverlays(id) {
-        const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
-        const data = res.data.body;
-        // 调用 getTypeAndZoom 方法获取级别和类型
-        const { nextZoom, type } = this.getTypeAndZoom();
-        data.forEach(item => {
-            // 创建覆盖物
-            this.createOverlays(item, nextZoom, type);
-        });
 	}
-	createOverlays (data, zoom, type) {
-		const { coord: {longitude, latitude}, label: areaName, count, value } = data;
+	// 渲染覆盖物入口
+	async renderOverlays(id) {
+		const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
+		const data = res.data.body;
+		// 调用 getTypeAndZoom 方法获取级别和类型
+		const { nextZoom, type } = this.getTypeAndZoom();
+		data.forEach(item => {
+			// 创建覆盖物
+			this.createOverlays(item, nextZoom, type);
+		});
+	}
+	createOverlays(data, zoom, type) {
+		const { coord: { longitude, latitude }, label: areaName, count, value } = data;
 		// 创建坐标对象
 		const areaPoint = new BMap.Point(longitude, latitude);
 
@@ -116,7 +123,7 @@ export default class Map extends React.Component {
 		}
 	}
 	// 创建区、镇覆盖物
-	createCircle (point, name, count, id, zoom) {
+	createCircle(point, name, count, id, zoom) {
 		// 创建覆盖物
 		const label = new BMap.Label('', {
 			position: point,
@@ -148,7 +155,7 @@ export default class Map extends React.Component {
 		// 添加覆盖物到地图中
 		this.map.addOverlay(label);
 	}
-	createRect (point, name, count, id) {
+	createRect(point, name, count, id) {
 		// 创建覆盖物
 		const label = new BMap.Label('', {
 			position: point,
@@ -167,28 +174,28 @@ export default class Map extends React.Component {
 		// 设置样式
 		label.setStyle(labelStyle);
 		label.addEventListener('click', () => {
-			// // 获取该区域下的房源数据
-			// this.renderOverlays(id);
-
-			// // 以当前点击的覆盖物为中心放大地图
-			// this.map.centerAndZoom(point);
-
-			// // 解决清除覆盖物时，百度地图API的JS文件自身报错的问题
-			// setTimeout(() => {
-			// 	this.map.clearOverlays();
-			// });
+			this.getHouseList(id);
 		});
 		// 添加覆盖物到地图中
 		this.map.addOverlay(label);
 	}
-    // 计算要绘制的覆盖物类型和下一个缩放级别
-    // 区 => 11，范围：>= 10 < 12
-    // 镇 => 13，范围：>= 12 < 14
-    // 小区 => 15，范围：>= 14 < 16
-    getTypeAndZoom() {
-        // 调用地图的 getZoom() 方法，来获取当前缩放级别
+	// 获取小区房源数据
+	async getHouseList(id) {
+		const res = await axios.get(`http://localhost:8080/houses?cityId=${id}`);
+		this.setState({
+			housesList: res.data.body.list,
+			// 展示房源列表
+			isShowList: true
+		});
+	}
+	// 计算要绘制的覆盖物类型和下一个缩放级别
+	// 区 => 11，范围：>= 10 < 12
+	// 镇 => 13，范围：>= 12 < 14
+	// 小区 => 15，范围：>= 14 < 16
+	getTypeAndZoom() {
+		// 调用地图的 getZoom() 方法，来获取当前缩放级别
 		const zoom = this.map.getZoom();
-		let nextZoom,type;
+		let nextZoom, type;
 		if (zoom >= 10 && zoom < 12) {
 			// 区
 			nextZoom = 13;
@@ -205,7 +212,7 @@ export default class Map extends React.Component {
 			nextZoom,
 			type
 		};
-    }
+	}
 	componentDidMount() {
 		this.initMap();
 	}
@@ -213,8 +220,46 @@ export default class Map extends React.Component {
 		return (
 			<div className={styles.map}>
 				<NavHeader>地图找房</NavHeader>
-				<div id="container" className={styles.container}>
-					地图
+				{/* 地图容器元素 */}
+				<div id="container" className={styles.container} />
+				{/* 房源列表 */}
+				{/* 添加 styles.show 展示房屋列表 */}
+				<div className={[styles.houseList, this.state.isShowList ? styles.show : ''].join(' ')}>
+					<div className={styles.titleWrap}>
+						<h1 className={styles.listTitle}>房屋列表</h1>
+						<Link className={styles.titleMore} to="/home/list">
+							更多房源
+						</Link>
+					</div>
+
+					<div className={styles.houseItems}>
+						{/* 房屋结构 */}
+						{this.state.housesList.map(item =>
+							<div className={styles.house} key={item.houseCode}>
+								<div className={styles.imgWrap}>
+									<img className={styles.img} src={`http://localhost:8080${item.houseImg}`} alt="" />
+								</div>
+								<div className={styles.content}>
+									<h3 className={styles.title}>
+										{item.title}
+									</h3>
+									<div className={styles.desc}>
+										{item.desc}
+									</div>
+									<div>
+										{item.tags.map(tag =>
+											<span className={[styles.tag, styles.tag1].join(' ')} key={tag}>
+												{tag}
+											</span>
+										)}
+									</div>
+									<div className={styles.price}>
+										<span className={styles.priceNum}>{item.price}</span> 元/月
+									</div>
+								</div>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		);
