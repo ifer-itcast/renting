@@ -28,7 +28,8 @@ export default class Map extends React.Component {
 
 		// 获取当前定位城市
 		const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
-		const map = new BMap.Map('container');
+        const map = new BMap.Map('container');
+        this.map = map; // 在其他方法中通过 this 能获取到地图对象
 		const myGeo = new BMap.Geocoder();
 		myGeo.getPoint(
 			label,
@@ -42,7 +43,7 @@ export default class Map extends React.Component {
 					map.addControl(new BMap.ScaleControl());
 
 					// 获取房源数据
-					const res = await axios.get(`http://localhost:8080/area/map?id=${value}`);
+					/* const res = await axios.get(`http://localhost:8080/area/map?id=${value}`);
 					res.data.body.forEach(item => {
 						// 为每一条数据创建覆盖物
                         const { coord: {longitude, latitude}, label: areaName, count, value } = item;
@@ -82,12 +83,53 @@ export default class Map extends React.Component {
 						});
 						// 3. 在 map 对象上调用 addOverlay() 方法，将文本覆盖物添加到地图中
 						map.addOverlay(label);
-					});
+                    }); */
+                    
+                    this.renderOverlays(value);
 				}
 			},
 			label
 		);
+    }
+    // 渲染覆盖物入口
+    async renderOverlays(id) {
+        const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
+        const data = res.data.body;
+        // 调用 getTypeAndZoom 方法获取级别和类型
+        const { nextZoom, type } = this.getTypeAndZoom();
+        data.forEach(item => {
+            // 创建覆盖物
+            this.createOverlays(item, nextZoom, type);
+        });
 	}
+	createOverlays () {
+		
+	}
+    // 计算要绘制的覆盖物类型和下一个缩放级别
+    // 区 => 11，范围：>= 10 < 12
+    // 镇 => 13，范围：>= 12 < 14
+    // 小区 => 15，范围：>= 14 < 16
+    getTypeAndZoom() {
+        // 调用地图的 getZoom() 方法，来获取当前缩放级别
+		const zoom = this.map.getZoom();
+		let nextZoom,type;
+		if (zoom >= 10 && zoom < 12) {
+			// 区
+			nextZoom = 13;
+			type = 'circle';
+		} else if (zoom >= 12 && zoom < 14) {
+			// 镇
+			nextZoom = 15;
+			type = 'circle';
+		} else if (zoom >= 14 && zoom < 16) {
+			// 小区
+			type = 'rect';
+		}
+		return {
+			nextZoom,
+			type
+		};
+    }
 	componentDidMount() {
 		this.initMap();
 	}
