@@ -28,6 +28,16 @@ export default class Map extends React.Component {
                     map.addControl(new BMap.NavigationControl());
                     // 比例尺
                     map.addControl(new BMap.ScaleControl());
+                    const opts = {
+                        position: point,
+                        offset: new BMap.Size(30, -30)
+                    };
+                    // 1. 创建 Label 实例对象
+                    const label = new BMap.Label('文本覆盖物', opts);
+                    // 2. 调用 setStyle() 方法设置样式
+                    label.setStyle({ color: 'red' });
+                    // 3. 在 map 对象上调用 addOverlay() 方法，将文本覆盖物添加到地图中
+                    map.addOverlay(label);
 				}
 			},
 			label
