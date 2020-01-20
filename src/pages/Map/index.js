@@ -5,8 +5,8 @@ import styles from './index.module.css';
 const BMap = window.BMap;
 
 export default class Map extends React.Component {
-	componentDidMount() {
-		// // 全局对象需要作为 window 的属性访问
+    initMap () {
+        // // 全局对象需要作为 window 的属性访问
 		// // 否则通不过 ESLint
 		// const map = new window.BMap.Map('container');
 		// // 设置中心点坐标
@@ -15,7 +15,7 @@ export default class Map extends React.Component {
 		// map.centerAndZoom(point, 15);
 
 		// 获取当前定位城市
-		const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
+		const { label } = JSON.parse(localStorage.getItem('hkzf_city'));
 		const map = new BMap.Map('container');
 		const myGeo = new BMap.Geocoder();
 		myGeo.getPoint(
@@ -24,12 +24,17 @@ export default class Map extends React.Component {
 				if (point) {
 					map.centerAndZoom(point, 11);
                     // map.addOverlay(new BMap.Marker(point));
+                    // 平移缩放控件
                     map.addControl(new BMap.NavigationControl());
+                    // 比例尺
                     map.addControl(new BMap.ScaleControl());
 				}
 			},
 			label
 		);
+    }
+	componentDidMount() {
+		this.initMap();
 	}
 	render() {
 		return (
