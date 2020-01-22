@@ -13,4 +13,6 @@ import './index.css';
 // 应该将组件的导入放在样式导入后面，让组件中自定义样式覆盖默认的
 import App from './App';
 
+// import './utils/url';
+
 ReactDOM.render(<App />, document.getElementById('root'));

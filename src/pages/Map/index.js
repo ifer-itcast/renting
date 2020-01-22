@@ -6,6 +6,8 @@ import styles from './index.module.css';
 
 import { Toast } from 'antd-mobile';
 
+import { BASE_URL } from '../../utils/url';
+
 const BMap = window.BMap;
 
 // 覆盖物样式
@@ -250,7 +252,7 @@ export default class Map extends React.Component {
 		return this.state.housesList.map(item =>
 			<div className={styles.house} key={item.houseCode}>
 				<div className={styles.imgWrap}>
-					<img className={styles.img} src={`http://localhost:8080${item.houseImg}`} alt="" />
+					<img className={styles.img} src={BASE_URL + item.houseImg} alt="" />
 				</div>
 				<div className={styles.content}>
 					<h3 className={styles.title}>

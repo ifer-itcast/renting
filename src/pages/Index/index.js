@@ -5,6 +5,8 @@ import './index.scss';
 
 import { getCurrentCity } from '../../utils';
 
+import { BASE_URL } from '../../utils/url';
+
 import nav1 from '../../assets/images/nav-1.png';
 import nav2 from '../../assets/images/nav-2.png';
 import nav3 from '../../assets/images/nav-3.png';
@@ -114,7 +116,7 @@ export default class Index extends React.Component {
 				style={{ display: 'inline-block', width: '100%', height: 212 }}
 			>
 				<img
-					src={`http://localhost:8080${item.imgSrc}`}
+					src={BASE_URL + item.imgSrc}
 					alt=""
 					style={{ width: '100%', verticalAlign: 'top' }}
 				/>
