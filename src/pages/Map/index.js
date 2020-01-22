@@ -1,5 +1,6 @@
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import { API } from '../../utils/api';
 import { Link } from 'react-router-dom';
 import NavHeader from '../../components/NavHeader';
 import styles from './index.module.css';
@@ -114,7 +115,7 @@ export default class Map extends React.Component {
 		try {
 			// 开启 loading
 			Toast.loading('加载中...', 0, null, false);
-			const res = await axios.get(`http://localhost:8080/area/map?id=${id}`);
+			const res = await API.get(`/area/map?id=${id}`);
 			// 关闭 loading
 			Toast.hide();
 			const data = res.data.body;
@@ -207,7 +208,7 @@ export default class Map extends React.Component {
 		try {
 			// 开启 loading
 			Toast.loading('加载中...', 0, null, false);
-			const res = await axios.get(`http://localhost:8080/houses?cityId=${id}`);
+			const res = await API.get(`/houses?cityId=${id}`);
 			// 关闭 loading
 			Toast.hide();
 			this.setState({
