@@ -30,6 +30,7 @@ function SearchHeader({ cityName, history, className }) {
 
 // 添加属性校验
 SearchHeader.propTypes = {
-	cityName: PropTypes.string.isRequired
+	cityName: PropTypes.string.isRequired,
+	className: PropTypes.string
 };
 export default withRouter(SearchHeader);
