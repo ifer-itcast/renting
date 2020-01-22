@@ -1,11 +1,14 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { TabBar } from 'antd-mobile';
+
+// 让 HouseList 样式覆盖 index.css
+import './index.css';
+
 import News from '../News';
 import Index from '../Index';
 import HouseList from '../HouseList';
 import Profile from '../Profile';
-import './index.css';
 
 // 不变的数据，没必要存成状态
 const tabItems = [
