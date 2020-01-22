@@ -1,6 +1,7 @@
 import React from 'react';
 import { Flex } from 'antd-mobile';
 import SearchHeader from '../../components/SearchHeader';
+import Filter from './components/Filter';
 
 import styles from './index.module.css';
 
@@ -15,6 +16,7 @@ export default class HouseList extends React.Component {
 					<i className="iconfont icon-back" onClick={() => this.props.history.go(-1)} />
 					<SearchHeader cityName={label} className={styles.searchHeader} />
 				</Flex>
+				<Filter />
 			</div>
 		);
 	}
