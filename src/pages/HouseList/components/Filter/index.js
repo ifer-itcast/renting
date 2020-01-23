@@ -121,7 +121,7 @@ export default class Filter extends Component {
 				break;
 		}
 
-		return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
+		return <FilterPicker key={openType} onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
 	}
 
 	render() {
