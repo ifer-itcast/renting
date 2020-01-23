@@ -14,7 +14,7 @@ import FilterFooter from '../../../../components/FilterFooter';
 
 export default class FilterPicker extends Component {
 	state = {
-		value: null
+		value: this.props.defaultValue
 	};
 
 	render() {

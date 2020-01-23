@@ -32,7 +32,8 @@ export default class Filter extends Component {
 		// 控制 FilterPicker 或 FilterMore 组件的展示或隐藏
 		openType: '',
 		// 所有筛选条件数据
-		filtersData: {}
+		filtersData: {},
+		selectedValues
 	};
 
 	componentDidMount() {
@@ -81,13 +82,18 @@ export default class Filter extends Component {
 		console.log(type, value);
 		// 隐藏对话框
 		this.setState({
-			openType: ''
+			openType: '',
+			selectedValues: {
+				...this.state.selectedValues,
+				// 只更新当前 type 对应的选中值
+				[type]: value
+			}
 		});
 	};
 
 	// 渲染 FilterPicker 组件的方法
 	renderFilterPicker() {
-		const { openType, filtersData: { area, subway, rentType, price } } = this.state;
+		const { openType, filtersData: { area, subway, rentType, price }, selectedValues } = this.state;
 
 		if (openType !== 'area' && openType !== 'mode' && openType !== 'price') {
 			return null;
@@ -96,6 +102,7 @@ export default class Filter extends Component {
 		// 根据 openType 来拿到当前筛选条件数据
 		let data = [];
 		let cols = 3;
+		let defaultValue = selectedValues[openType];
 		switch (openType) {
 			case 'area':
 				// 获取到区域数据
@@ -114,7 +121,7 @@ export default class Filter extends Component {
 				break;
 		}
 
-		return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} />;
+		return <FilterPicker onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
 	}
 
 	render() {
