@@ -5,12 +5,34 @@ import FilterFooter from '../../../../components/FilterFooter';
 import styles from './index.module.css';
 
 export default class FilterMore extends Component {
+	state = {
+		selectedValues: []
+	}
+	onTagClick (value) {
+		const { selectedValues } = this.state;
+		// 创建新数组
+		const newSelectedValues = [...selectedValues];
+		if (selectedValues.indexOf(value) <= -1) {
+			// 没有当前项的值
+			newSelectedValues.push(value);
+		} else {
+			// 有
+			const index = newSelectedValues.findIndex(item => item === value);
+			newSelectedValues.splice(index, 1);
+		}
+		this.setState({
+			selectedValues: newSelectedValues
+		});
+	}
 	// 渲染标签
 	renderFilters(data) {
+		const { selectedValues } = this.state;
 		// 高亮类名： styles.tagActive
 		return data.map(item => {
+			const isSelected = selectedValues.indexOf(item.value) > -1;
+
 			return (
-				<span key={item.value} className={[styles.tag].join(' ')}>
+				<span key={item.value} className={[styles.tag, isSelected ? styles.tagActive : ''].join(' ')} onClick={() => this.onTagClick(item.value)}>
 					{item.label}
 				</span>
 			);
