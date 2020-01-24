@@ -159,6 +159,17 @@ export default class Filter extends Component {
 		return <FilterPicker key={openType} onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
 	}
 
+	renderFilterMore () {
+		const { openType, filtersData: {roomType, oriented, floor, characteristic} } = this.state;
+		if (openType !== 'more') {
+			return null;
+		}
+		const data = {
+			roomType, oriented, floor, characteristic
+		};
+		return <FilterMore data={data}/>;
+	}
+
 	render() {
 		const { titleSelectedStatus, openType } = this.state;
 
@@ -178,6 +189,7 @@ export default class Filter extends Component {
 
 					{/* 最后一个菜单对应的内容： */}
 					{/* <FilterMore /> */}
+					{this.renderFilterMore()}
 				</div>
 			</div>
 		);
