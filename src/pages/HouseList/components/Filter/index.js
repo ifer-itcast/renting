@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { Spring } from 'react-spring/renderprops';
+
 import FilterTitle from '../FilterTitle';
 import FilterPicker from '../FilterPicker';
 import FilterMore from '../FilterMore';
@@ -37,7 +39,7 @@ export default class Filter extends Component {
 	};
 
 	componentDidMount() {
-		this.htmlBody = document.body
+		this.htmlBody = document.body;
 		this.getFiltersData();
 	}
 
@@ -61,7 +63,7 @@ export default class Filter extends Component {
 
 		const { titleSelectedStatus, selectedValues } = this.state;
 		// 创建新的标题选中状态对象
-		const newTitleSelectedStatus = {...titleSelectedStatus};
+		const newTitleSelectedStatus = { ...titleSelectedStatus };
 		// 遍历标题选中状态对象
 		Object.keys(titleSelectedStatus).forEach(key => {
 			// key 数组中的每一项，就是每个标题的 type 值
@@ -75,7 +77,7 @@ export default class Filter extends Component {
 			if (key === 'area' && (selectedVal.length !== 2 || selectedVal[0] !== 'area')) {
 				// 高亮
 				newTitleSelectedStatus[key] = true;
-			} else if (key === 'mode' && selectedVal[0] !== 'null'){
+			} else if (key === 'mode' && selectedVal[0] !== 'null') {
 				// 高亮
 				newTitleSelectedStatus[key] = true;
 			} else if (key === 'price' && selectedVal[0] !== 'null') {
@@ -109,18 +111,18 @@ export default class Filter extends Component {
 	};
 
 	// 取消（隐藏对话框）
-	onCancel = (type) => {
+	onCancel = type => {
 		this.htmlBody.className = '';
 
 		const { titleSelectedStatus, selectedValues } = this.state;
 		// 创建新的标题选中状态对象
-		const newTitleSelectedStatus = {...titleSelectedStatus};
+		const newTitleSelectedStatus = { ...titleSelectedStatus };
 		// 其他标题
 		const selectedVal = selectedValues[type];
 		if (type === 'area' && (selectedVal.length !== 2 || selectedVal[0] !== 'area')) {
 			// 高亮
 			newTitleSelectedStatus[type] = true;
-		} else if (type === 'mode' && selectedVal[0] !== 'null'){
+		} else if (type === 'mode' && selectedVal[0] !== 'null') {
 			// 高亮
 			newTitleSelectedStatus[type] = true;
 		} else if (type === 'price' && selectedVal[0] !== 'null') {
@@ -142,16 +144,16 @@ export default class Filter extends Component {
 	// 确定（隐藏对话框）
 	onSave = (type, value) => {
 		this.htmlBody.className = '';
-		
+
 		const { titleSelectedStatus } = this.state;
 		// 创建新的标题选中状态对象
-		const newTitleSelectedStatus = {...titleSelectedStatus};
+		const newTitleSelectedStatus = { ...titleSelectedStatus };
 		// 其他标题
 		const selectedVal = value;
 		if (type === 'area' && (selectedVal.length !== 2 || selectedVal[0] !== 'area')) {
 			// 高亮
 			newTitleSelectedStatus[type] = true;
-		} else if (type === 'mode' && selectedVal[0] !== 'null'){
+		} else if (type === 'mode' && selectedVal[0] !== 'null') {
 			// 高亮
 			newTitleSelectedStatus[type] = true;
 		} else if (type === 'price' && selectedVal[0] !== 'null') {
@@ -175,7 +177,7 @@ export default class Filter extends Component {
 		// 区域
 		const areaKey = area[0];
 		let areaValue = 'null';
-		if(area.length === 3) {
+		if (area.length === 3) {
 			areaValue = area[2] !== null ? area[2] : area[1];
 		}
 		filters[areaKey] = areaValue;
@@ -228,21 +230,42 @@ export default class Filter extends Component {
 				break;
 		}
 
-		return <FilterPicker key={openType} onCancel={this.onCancel} onSave={this.onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
+		return (
+			<FilterPicker
+				key={openType}
+				onCancel={this.onCancel}
+				onSave={this.onSave}
+				data={data}
+				cols={cols}
+				type={openType}
+				defaultValue={defaultValue}
+			/>
+		);
 	}
 
-	renderFilterMore () {
-		const { openType, selectedValues, filtersData: {roomType, oriented, floor, characteristic} } = this.state;
+	renderFilterMore() {
+		const { openType, selectedValues, filtersData: { roomType, oriented, floor, characteristic } } = this.state;
 		if (openType !== 'more') {
 			return null;
 		}
 		const data = {
-			roomType, oriented, floor, characteristic
+			roomType,
+			oriented,
+			floor,
+			characteristic
 		};
 		// 设置默认选中值
 		const defaultValue = selectedValues.more;
 
-		return <FilterMore data={data} type={openType} onSave={this.onSave} defaultValue={defaultValue} onCancel={this.onCancel}/>;
+		return (
+			<FilterMore
+				data={data}
+				type={openType}
+				onSave={this.onSave}
+				defaultValue={defaultValue}
+				onCancel={this.onCancel}
+			/>
+		);
 	}
 
 	render() {
@@ -252,7 +275,10 @@ export default class Filter extends Component {
 			<div className={styles.root}>
 				{/* 前三个菜单的遮罩层 */}
 				{openType === 'area' || openType === 'mode' || openType === 'price'
-					? <div className={styles.mask} onClick={() => this.onCancel(openType)} />
+					? <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
+							{props =>
+								<div style={props} className={styles.mask} onClick={() => this.onCancel(openType)} />}
+						</Spring>
 					: null}
 
 				<div className={styles.content}>
