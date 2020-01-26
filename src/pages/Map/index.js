@@ -8,6 +8,7 @@ import styles from './index.module.css';
 import { Toast } from 'antd-mobile';
 
 import { BASE_URL } from '../../utils/url';
+import HouseItem from '../../components/HouseItem';
 
 const BMap = window.BMap;
 
@@ -125,7 +126,7 @@ export default class Map extends React.Component {
 				// 创建覆盖物
 				this.createOverlays(item, nextZoom, type);
 			});
-		} catch(e) {
+		} catch (e) {
 			// 关闭 loading
 			Toast.hide();
 		}
@@ -216,7 +217,7 @@ export default class Map extends React.Component {
 				// 展示房源列表
 				isShowList: true
 			});
-		} catch(e) {
+		} catch (e) {
 			// 关闭 loading
 			Toast.hide();
 		}
@@ -249,7 +250,7 @@ export default class Map extends React.Component {
 	componentDidMount() {
 		this.initMap();
 	}
-	renderHousesList() {
+	/* renderHousesList() {
 		return this.state.housesList.map(item =>
 			<div className={styles.house} key={item.houseCode}>
 				<div className={styles.imgWrap}>
@@ -277,6 +278,18 @@ export default class Map extends React.Component {
 					</div>
 				</div>
 			</div>
+		);
+	} */
+	renderHousesList() {
+		return this.state.housesList.map(item =>
+			<HouseItem
+				key={item.houseCode}
+				src={BASE_URL + item.houseImg}
+				title={item.title}
+				desc={item.desc}
+				tags={item.tags}
+				price={item.price}
+			/>
 		);
 	}
 	render() {

@@ -1,10 +1,13 @@
 import React from 'react';
 import { Flex } from 'antd-mobile';
+import { List } from 'react-virtualized';
 import { API } from '../../utils/api';
+import { BASE_URL } from '../../utils/url';
 import SearchHeader from '../../components/SearchHeader';
 import Filter from './components/Filter';
 
 import styles from './index.module.css';
+import HouseItem from '../../components/HouseItem';
 
 // 获取当前定位城市信息
 const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
@@ -46,6 +49,18 @@ export default class HouseList extends React.Component {
 		// 调用获取房屋数据的方法
 		this.searchHouseList();
 	};
+	renderHouseList = ({
+		key, // Unique key within array of rows
+		index, // 索引号
+		style // 指定了每一样的样式
+	}) => {
+		// 根据索引号来获取当前这一行的房屋数据
+		const { list } = this.state;
+		const house = list[index];
+		return (
+			<HouseItem key={key} style={style} src={BASE_URL + house.houseImg} title={house.title} desc={house.desc} tags={house.tags} price={house.price}/>
+		);
+	};
 	render() {
 		return (
 			<div>
@@ -53,7 +68,18 @@ export default class HouseList extends React.Component {
 					<i className="iconfont icon-back" onClick={() => this.props.history.go(-1)} />
 					<SearchHeader cityName={label} className={styles.searchHeader} />
 				</Flex>
+				{/* 条件筛选栏 */}
 				<Filter onFilter={this.onFilter} />
+				{/* 房屋列表 */}
+				<div className={styles.houseItems}>
+					<List
+						width={300}
+						height={300}
+						rowCount={this.state.count} // List 列表的行数
+						rowHeight={120} // 每一行的高度
+						rowRenderer={this.renderHouseList} // 选中每一行
+					/>
+				</div>
 			</div>
 		);
 	}
