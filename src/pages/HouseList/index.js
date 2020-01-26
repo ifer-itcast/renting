@@ -10,8 +10,19 @@ import styles from './index.module.css';
 const { label } = JSON.parse(localStorage.getItem('hkzf_city'));
 
 export default class HouseList extends React.Component {
+	state = {
+		// 列表数据
+		list: [],
+		// 总条数
+		count: 0
+	};
+	// 初始化实例属性
+	filters = {};
+	componentDidMount() {
+		this.searchHouseList();
+	}
 	// 用来获取房屋列表数据
-	async searchHouseList () {
+	async searchHouseList() {
 		// 获取当前定位城市 ID
 		const { value } = JSON.parse(localStorage.getItem('hkzf_city'));
 
@@ -23,14 +34,18 @@ export default class HouseList extends React.Component {
 				end: 20
 			}
 		});
-		console.log(res);
+		const { count, list } = res.data.body;
+		this.setState({
+			list,
+			count
+		});
 	}
 	// 接收 Filter 组件中的筛选条件数据
-	onFilter = (filters) => {
+	onFilter = filters => {
 		this.filters = filters;
 		// 调用获取房屋数据的方法
 		this.searchHouseList();
-	}
+	};
 	render() {
 		return (
 			<div>
@@ -38,7 +53,7 @@ export default class HouseList extends React.Component {
 					<i className="iconfont icon-back" onClick={() => this.props.history.go(-1)} />
 					<SearchHeader cityName={label} className={styles.searchHeader} />
 				</Flex>
-				<Filter onFilter={this.onFilter}/>
+				<Filter onFilter={this.onFilter} />
 			</div>
 		);
 	}
