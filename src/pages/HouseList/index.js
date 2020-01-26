@@ -9,6 +9,9 @@ import Filter from './components/Filter';
 import styles from './index.module.css';
 import HouseItem from '../../components/HouseItem';
 
+// 导入吸顶组件
+import Sticky from '../../components/Sticky';
+
 // 获取当前定位城市信息
 const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
 
@@ -111,7 +114,9 @@ export default class HouseList extends React.Component {
 					<SearchHeader cityName={label} className={styles.searchHeader} />
 				</Flex>
 				{/* 条件筛选栏 */}
-				<Filter onFilter={this.onFilter} />
+				<Sticky height={40}>
+					<Filter onFilter={this.onFilter} />
+				</Sticky>
 				{/* 房屋列表 */}
 				<div className={styles.houseItems}>
 					<InfiniteLoader isRowLoaded={this.isRowLoaded} loadMoreRows={this.loadMoreRows} rowCount={count}>
