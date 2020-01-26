@@ -179,6 +179,9 @@ export default class Filter extends Component {
 		// 更多
 		filters.more = more.join(',');
 
+		// 调用父组件中的方法，将筛选条件传递给父组件
+		this.props.onFilter(filters);
+
 		// 隐藏对话框
 		this.setState({
 			openType: '',
