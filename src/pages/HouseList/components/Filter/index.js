@@ -155,15 +155,35 @@ export default class Filter extends Component {
 		} else {
 			newTitleSelectedStatus[type] = false;
 		}
+		// 最新的选中值
+		const newSelectedValues = {
+			...this.state.selectedValues,
+			// 只更新当前 type 对应的选中值
+			[type]: value
+		};
+		const { area, mode, price, more } = newSelectedValues;
+		// 筛选条件数据
+		const filters = {};
+		// 区域
+		const areaKey = area[0];
+		let areaValue = 'null';
+		if(area.length === 3) {
+			areaValue = area[2] !== null ? area[2] : area[1];
+		}
+		filters[areaKey] = areaValue;
+
+		// 方式和租金
+		filters.mode = mode[0];
+		filters.price = price[0];
+
+		// 更多
+		filters.more = more.join(',');
+
 		// 隐藏对话框
 		this.setState({
 			openType: '',
 			titleSelectedStatus: newTitleSelectedStatus,
-			selectedValues: {
-				...this.state.selectedValues,
-				// 只更新当前 type 对应的选中值
-				[type]: value
-			}
+			selectedValues: newSelectedValues
 		});
 	};
 
