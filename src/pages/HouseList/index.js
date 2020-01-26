@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex } from 'antd-mobile';
-import { List } from 'react-virtualized';
+import { List, AutoSizer, WindowScroller } from 'react-virtualized';
 import { API } from '../../utils/api';
 import { BASE_URL } from '../../utils/url';
 import SearchHeader from '../../components/SearchHeader';
@@ -58,7 +58,15 @@ export default class HouseList extends React.Component {
 		const { list } = this.state;
 		const house = list[index];
 		return (
-			<HouseItem key={key} style={style} src={BASE_URL + house.houseImg} title={house.title} desc={house.desc} tags={house.tags} price={house.price}/>
+			<HouseItem
+				key={key}
+				style={style}
+				src={BASE_URL + house.houseImg}
+				title={house.title}
+				desc={house.desc}
+				tags={house.tags}
+				price={house.price}
+			/>
 		);
 	};
 	render() {
@@ -72,13 +80,22 @@ export default class HouseList extends React.Component {
 				<Filter onFilter={this.onFilter} />
 				{/* 房屋列表 */}
 				<div className={styles.houseItems}>
-					<List
-						width={300}
-						height={300}
-						rowCount={this.state.count} // List 列表的行数
-						rowHeight={120} // 每一行的高度
-						rowRenderer={this.renderHouseList} // 选中每一行
-					/>
+					<WindowScroller>
+						{({ height, isScrolling, scrollTop }) =>
+							<AutoSizer>
+								{({ width }) =>
+									<List
+										autoHeight // 设置高度为 WindowScroller 最终渲染的列表高度
+										width={width} // 视口的宽度
+										height={height} // 视口的高度
+										rowCount={this.state.count} // List 列表的行数
+										rowHeight={120} // 每一行的高度
+										rowRenderer={this.renderHouseList} // 选中每一行
+										isScrolling={isScrolling}
+										scrollTop={scrollTop}
+									/>}
+							</AutoSizer>}
+					</WindowScroller>
 				</div>
 			</div>
 		);
