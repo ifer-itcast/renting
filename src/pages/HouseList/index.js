@@ -7,7 +7,7 @@ import Filter from './components/Filter';
 import styles from './index.module.css';
 
 // 获取当前定位城市信息
-const { label } = JSON.parse(localStorage.getItem('hkzf_city'));
+const { label, value } = JSON.parse(localStorage.getItem('hkzf_city'));
 
 export default class HouseList extends React.Component {
 	state = {
@@ -24,7 +24,7 @@ export default class HouseList extends React.Component {
 	// 用来获取房屋列表数据
 	async searchHouseList() {
 		// 获取当前定位城市 ID
-		const { value } = JSON.parse(localStorage.getItem('hkzf_city'));
+		// const { value } = JSON.parse(localStorage.getItem('hkzf_city'));
 
 		const res = await API.get('/houses', {
 			params: {
