@@ -128,7 +128,7 @@ export default class Filter extends Component {
 
 	// 渲染 FilterPicker 组件的方法
 	renderFilterPicker() {
-		const { openType, filtersData: { area, subway, rentType, price }, selectedValues } = this.state;
+		const { openType, selectedValues, filtersData: { area, subway, rentType, price } } = this.state;
 
 		if (openType !== 'area' && openType !== 'mode' && openType !== 'price') {
 			return null;
@@ -160,14 +160,17 @@ export default class Filter extends Component {
 	}
 
 	renderFilterMore () {
-		const { openType, filtersData: {roomType, oriented, floor, characteristic} } = this.state;
+		const { openType, selectedValues, filtersData: {roomType, oriented, floor, characteristic} } = this.state;
 		if (openType !== 'more') {
 			return null;
 		}
 		const data = {
 			roomType, oriented, floor, characteristic
 		};
-		return <FilterMore data={data} type={openType} onSave={this.onSave}/>;
+		// 设置默认选中值
+		const defaultValue = selectedValues.more;
+
+		return <FilterMore data={data} type={openType} onSave={this.onSave} defaultValue={defaultValue} onCancel={this.onCancel}/>;
 	}
 
 	render() {
