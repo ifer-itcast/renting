@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Route } from 'react-router-dom';
 import { TabBar } from 'antd-mobile';
 
 // 让 HouseList 样式覆盖 index.css
 import './index.css';
 
-import News from '../News';
 import Index from '../Index';
-import HouseList from '../HouseList';
-import Profile from '../Profile';
+
+// import News from '../News';
+// import HouseList from '../HouseList';
+// import Profile from '../Profile';
+
+const News = lazy(() => import('../News'));
+const HouseList = lazy(() => import('../HouseList'));
+const Profile = lazy(() => import('../Profile'));
 
 // 不变的数据，没必要存成状态
 const tabItems = [
@@ -38,7 +43,7 @@ export default class Home extends React.Component {
 	state = {
 		selectedTab: this.props.location.pathname
 	};
-	componentDidUpdate (prevProps) {
+	componentDidUpdate(prevProps) {
 		if (prevProps.location.pathname !== this.props.location.pathname) {
 			// 说明路由发生切换了
 			this.setState({
