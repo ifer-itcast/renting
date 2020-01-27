@@ -22,3 +22,6 @@ export const getCurrentCity = () => {
     // 为了返回值的统一，此处也使用 Promise
     return Promise.resolve(localCity);
 };
+
+export { API } from './api';
+export { BASE_URL } from './url';

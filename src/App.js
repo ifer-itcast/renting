@@ -6,6 +6,10 @@ import CityList from './pages/CityList';
 import Map from './pages/Map';
 import HouseDetail from './pages/HouseDetail';
 
+// 登录
+import Login from './pages/Login';
+import Registe from './pages/Registe';
+
 function App() {
 	return (
 		<Router>
@@ -17,6 +21,8 @@ function App() {
 				<Route path="/map" component={Map} />
 				{/* 房源详情的路由规则 */}
 				<Route path="/detail/:id" component={HouseDetail}/>
+				<Route path="/login" component={Login} />
+				<Route path="/registe" component={Registe} />
 			</div>
 		</Router>
 	);
