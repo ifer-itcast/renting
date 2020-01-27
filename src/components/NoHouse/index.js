@@ -14,7 +14,7 @@ const NoHouse = ({ children }) =>
 	</div>;
 
 NoHouse.propTypes = {
-	children: PropTypes.string.isRequired
+	children: PropTypes.node.isRequired
 };
 
 export default NoHouse;

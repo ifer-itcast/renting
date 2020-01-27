@@ -32,13 +32,13 @@ const navs = [
 		id: 2,
 		img: nav3,
 		title: '地图找房',
-		path: '/home/map'
+		path: '/map'
 	},
 	{
 		id: 3,
 		img: nav4,
 		title: '去出租',
-		path: '/home/list'
+		path: '/rent/add'
 	}
 ];
 
