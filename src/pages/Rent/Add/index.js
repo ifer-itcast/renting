@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import { Flex, List, InputItem, Picker, ImagePicker, TextareaItem, Modal } from 'antd-mobile';
+import { Flex, List, InputItem, Picker, ImagePicker, TextareaItem, Modal, Toast } from 'antd-mobile';
+
+import { API } from '../../../utils';
 
 import NavHeader from '../../../components/NavHeader';
 import HousePackge from '../../../components/HousePackage';
@@ -104,18 +106,89 @@ export default class RentAdd extends Component {
 	};
 
 	/* 
-        获取房屋配置数据：
-
-        1 给 HousePackge 组件，添加 onSelect 属性。
-        2 在 onSelect 处理方法中，通过参数获取到当前选中项的值。
-        3 根据发布房源接口的参数说明，将获取到的数组类型的选中值，转化为字符串类型。
-        4 调用 setState() 更新状态。
-    */
+    获取房屋配置数据：
+  */
 	handleSupporting = selected => {
 		// console.log(selected)
 		this.setState({
 			supporting: selected.join('|')
 		});
+	};
+
+	/* 
+    获取房屋图片：
+
+    1 给 ImagePicker 组件添加 onChange 配置项。
+    2 通过 onChange 的参数，获取到上传的图片，并存储到状态 tempSlides 中。
+  */
+	handleHouseImg = (files, type, index) => {
+		console.log(files, type, index);
+		this.setState({
+			tempSlides: files
+		});
+	};
+
+	/* 
+    发布房源：
+
+    1 在 addHouse 方法中，从 state 里面获取到所有房屋数据。
+    2 使用 API 调用发布房源接口，传递所有房屋数据。
+    3 根据接口返回值中的状态码，判断是否发布成功。
+    4 如果状态码是 200，表示发布成功，就提示：发布成功，并跳转到已发布房源页面。
+    5 否则，就提示：服务器偷懒了，请稍后再试~。
+  */
+	addHouse = async () => {
+		const {
+			tempSlides,
+			title,
+			description,
+			oriented,
+			supporting,
+			price,
+			roomType,
+			size,
+			floor,
+			community
+		} = this.state;
+		let houseImg = '';
+
+		// 上传房屋图片：
+		if (tempSlides.length > 0) {
+			// 已经有上传的图片了
+			const form = new FormData();
+			tempSlides.forEach(item => form.append('file', item.file));
+
+			const res = await API.post('/houses/image', form, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
+
+			// console.log(res)
+			houseImg = res.data.body.join('|');
+		}
+
+		// 发布房源
+		const res = await API.post('/user/houses', {
+			title,
+			description,
+			oriented,
+			supporting,
+			price,
+			roomType,
+			size,
+			floor,
+			community: community.id,
+			houseImg
+		});
+
+		if (res.data.status === 200) {
+			// 发布成功
+			Toast.info('发布成功', 1, null, false);
+			this.props.history.push('/rent');
+		} else {
+			Toast.info('服务器偷懒了，请稍后再试~', 2, null, false);
+		}
 	};
 
 	render() {
@@ -187,7 +260,12 @@ export default class RentAdd extends Component {
 
 				{/* 房屋图像 */}
 				<List className={styles.pics} renderHeader={() => '房屋图像'} data-role="rent-list">
-					<ImagePicker files={tempSlides} multiple={true} className={styles.imgpicker} />
+					<ImagePicker
+						files={tempSlides}
+						onChange={this.handleHouseImg}
+						multiple={true}
+						className={styles.imgpicker}
+					/>
 				</List>
 
 				{/* 房屋配置 */}
