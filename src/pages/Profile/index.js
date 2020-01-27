@@ -87,11 +87,12 @@ export default class Profile extends Component {
 			return;
 		}
 
-		// 发送请求，获取个人资料
+        // 发送请求，获取个人资料
+        // 请求拦截器中有对 headers 进行了操作
 		const res = await API.get('/user', {
-			headers: {
-				authorization: getToken()
-			}
+			// headers: {
+			// 	authorization: getToken()
+			// }
 		});
 
 		// console.log(res)
