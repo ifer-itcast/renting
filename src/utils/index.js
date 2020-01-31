@@ -9,6 +9,7 @@ export const getCurrentCity = () => {
             const curCity = new window.BMap.LocalCity();
             curCity.get(async res => {
                 try {
+                    // 用当前定位城市去后端换取有信息的城市数据
                     const result = await axios.get(`http://localhost:8080/area/info?name=${res.name}`);
                     localStorage.setItem('hkzf_city', JSON.stringify(result.data.body));
                     resolve(result.data.body);
