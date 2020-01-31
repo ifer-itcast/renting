@@ -3,6 +3,9 @@ import { NavBar } from 'antd-mobile';
 import axios from 'axios';
 import './index.scss';
 
+// [{label: '北京', value: '', pinyin: 'beijing', short: 'bj'}]
+// [b: [{label: '北京', value: '', pinyin: 'beijing', short: 'bj'}]]
+
 const formatCityData = list => {
 	const cityList = {};
 	list.forEach(item => {
