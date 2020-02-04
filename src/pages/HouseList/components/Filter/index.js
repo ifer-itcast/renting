@@ -168,7 +168,8 @@ export default class Filter extends Component {
 		const areaKey = area[0];
 		let areaValue = 'null';
 		if(area.length === 3) {
-			areaValue = area[2] !== null ? area[2] : area[1];
+			// 注意这里是和 'null' 字符串进行的比较，而不是 null
+			areaValue = area[2] !== 'null' ? area[2] : area[1];
 		}
 		filters[areaKey] = areaValue;
 
