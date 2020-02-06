@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Grid, Button, Modal } from 'antd-mobile';
 
 import { BASE_URL, isAuth, getToken, removeToken, API } from '../../utils';
-
+import defaultAvatar from '../../assets/images/default.jpg';
 import styles from './index.module.css';
 
 // 菜单数据
@@ -96,10 +96,15 @@ export default class Profile extends Component {
 
 		// console.log(res)
 		if (res.data.status === 200) {
-			const { avatar, nickname } = res.data.body;
+			let { avatar, nickname } = res.data.body;
+			if (avatar) {
+				avatar = BASE_URL + avatar;
+			} else {
+				avatar = defaultAvatar;
+			}
 			this.setState({
 				userInfo: {
-					avatar: BASE_URL + avatar,
+					avatar,
 					nickname
 				}
 			});
